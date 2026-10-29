@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM Аренда v3.0</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    
+    <!-- ШАПКА И ДАШБОРД -->
+    <header>
+      <h1>🏢 CRM для аренды <span style="font-size: 14px; color: #94a3b8;">v3.0</span></h1>
+      <div class="global-actions">
+        <button class="btn btn-outline" id="exportBtn">📥 Скачать Excel</button>
+        <label class="btn btn-outline" style="cursor:pointer;">
+          📤 Загрузить Excel
+          <input type="file" id="importInput" accept=".csv" style="display: none;">
+        </label>
+      </div>
+    </header>
+
+    <div class="dashboard">
+      <div class="dash-card">
+        <span class="dash-title">Общий доход</span>
+        <span class="dash-val profit" id="totalIncome">0 ₽</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-title">Общие расходы</span>
+        <span class="dash-val loss" id="totalExpenses">0 ₽</span>
+      </div>
+      <div class="dash-card main-dash">
+        <span class="dash-title">Чистая прибыль</span>
+        <span class="dash-val" id="totalProfit">0 ₽</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-title">Общая сумма долгов</span>
+        <span class="dash-val loss" id="totalDebts">0 ₽</span>
+      </div>
+      <div class="dash-card">
+        <span class="dash-title">Договоры (истекают)</span>
+        <span class="dash-val" id="expiringContracts" style="color: #fbbf24;">0</span>
+      </div>
+    </div>
+
+    <!-- ФОРМА ДОБАВЛЕНИЯ / РЕДАКТИРОВАНИЯ -->
+    <div class="add-form">
+      <h2 id="formTitle">Добавить квартиру</h2>
+      <input type="hidden" id="editId">
+      
+      <div class="form-sections">
+        <!-- 1. Основное -->
+        <fieldset>
+          <legend>Основная информация</legend>
+          <div class="form-grid">
+            <div class="input-group">
+              <label>Адрес / Название</label>
+              <input type="text" id="name" placeholder="ул. Ленина, 15">
+            </div>
+            <div class="input-group">
+              <label>Фото (URL или загрузка)</label>
+              <input type="file" id="photo" accept="image/*" style="padding: 7px;">
+            </div>
+            <div class="input-group">
+              <label>Площадь (кв.м)</label>
+              <input type="number" id="area" placeholder="45">
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 2. Арендатор и сроки -->
+        <fieldset>
+          <legend>Арендатор и сроки</legend>
+          <div class="form-grid">
+            <div class="input-group">
+              <label>ФИО Арендатора</label>
+              <input type="text" id="tenantName" placeholder="Иванов Иван">
+            </div>
+            <div class="input-group">
+              <label>Телефон</label>
+              <input type="tel" id="tenantPhone" placeholder="+7 999 000-00-00">
+            </div>
+            <div class="input-group">
+              <label>Дата начала</label>
+              <input type="date" id="startDate">
+            </div>
+            <div class="input-group">
+              <label>Дата окончания</label>
+              <input type="date" id="endDate">
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 3. Финансы -->
+        <fieldset>
+          <legend>Финансы (в месяц)</legend>
+          <div class="form-grid">
+            <div class="input-group">
+              <label>Оплата (₽)</label>
+              <input type="number" id="income" placeholder="30000">
+            </div>
+            <div class="input-group">
+              <label>Ипотека (₽)</label>
+              <input type="number" id="mortgage" placeholder="0">
+            </div>
+            <div class="input-group">
+              <label>Коммуналка (₽)</label>
+              <input type="number" id="utilities" placeholder="4000">
+            </div>
+            <div class="input-group">
+              <label>Расходники (₽)</label>
+              <input type="number" id="expenses" placeholder="2000">
+            </div>
+            <div class="input-group">
+              <label>Статус оплаты за месяц</label>
+              <select id="paymentStatus">
+                <option value="paid">Оплачено</option>
+                <option value="debt">Долг</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 4. Счетчики -->
+        <fieldset>
+          <legend>Счетчики (Вода/Свет/Газ)</legend>
+          <div class="form-grid">
+            <div class="input-group">
+              <label>Предыдущее</label>
+              <input type="number" id="prevMeter" placeholder="100">
+            </div>
+            <div class="input-group">
+              <label>Текущее</label>
+              <input type="number" id="currMeter" placeholder="150">
+            </div>
+            <div class="input-group">
+              <label>Тариф (₽ за ед.)</label>
+              <input type="number" id="meterRate" placeholder="6">
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="input-group" style="margin-top: 15px;">
+          <label>Заметки</label>
+          <input type="text" id="notes" placeholder="Например: сломался кран...">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="btn btn-add" id="addBtn">Сохранить</button>
+        <button class="btn btn-cancel hidden" id="cancelBtn">Отмена</button>
+      </div>
+    </div>
+
+    <!-- СПИСОК КВАРТИР -->
+    <div class="apartments-list" id="list"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
